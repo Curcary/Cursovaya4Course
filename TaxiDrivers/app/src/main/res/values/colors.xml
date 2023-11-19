@@ -4,7 +4,7 @@
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="teal_700">#00870101</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background_color">#CAC5B2</color>
@@ -13,4 +13,5 @@
     <color name="tint_color">#DEAC71</color>
     <color name="text_color">#7F5D06</color>
     <color name="button_color">#A47034</color>
+    <color name="accept_button_color">#BCBCBC</color>
 </resources>

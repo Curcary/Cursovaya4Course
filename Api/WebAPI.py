@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from flask_restful import Api
 import ConnectToDB
 
@@ -19,7 +19,7 @@ def get_active_orders():
     rows = cursor.fetchall()
     for row in rows:
         results.append(dict(zip(columns, row)))
-    return jsonify({'data': results})
+    return jsonify(results)
 
 @app.route('/Rybn/TakeAnOrder/<int:order_id>/<int:driver_id>', methods=['POST'])
 def take_an_order(order_id, driver_id):
@@ -55,15 +55,19 @@ delete from orders o where o.orderid = %(orderid)s
 @app.route("/Rybn/Login/<string:phone>/<string:password>", methods=['GET'])
 def login(phone, password):
     cursor = conn.cursor()
-    cursor.execute("""select driverfirstname, driverlastname, drivermiddlename,
+    cursor.execute("""select driverid, driverfirstname, driverlastname, drivermiddlename,
       driverphone, encode(driverphoto, 'hex') as driverphoto from drivers d
 where d.driverphone=%(phone)s and d.driverpassword=%(password)s""", {'phone':phone, 'password':password})
+    row = cursor.fetchone()
     columns = [column[0] for column in cursor.description]
-    results = []
-    rows = cursor.fetchall()
-    for row in rows:
-        results.append(dict(zip(columns, row)))
-    return jsonify({'data': results})
+
+    result = {}
+    if row!=None:
+        for i in range(len(columns)):
+            result[columns[i]] = row[i]
+    else:
+        return abort(403)
+    return result
 
 @app.route("/Rybn/EndOrder/<int:order_id>/<float:cost>", methods=['PUT'])
 def end_order(order_id, cost):
@@ -81,7 +85,7 @@ def get_todays_stats(id):
     cursor.execute("""select count(*) as EndedOrders, sum(o.order_cost) as SumCost from orders o, statuses s
 where o.statusid=s.statusid and
 s.statusname='Завершён' and
-date_trunc('day', orderdate)=date_trunc('day', current_timestamp)""")
+date_trunc('day', orderdate)=date_trunc('day', current_timestamp) and o.driverid =%s""", id)
     columns = [column[0] for column in cursor.description]
     results = []
     rows = cursor.fetchall()
@@ -95,7 +99,7 @@ def get_monthly_stats(id):
     cursor.execute("""select count(*) as EndedOrders, sum(o.order_cost) as SumCost from orders o, statuses s
 where o.statusid=s.statusid and
 s.statusname='Завершён' and
-date_trunc('month', orderdate)=date_trunc('month', current_timestamp)""")
+date_trunc('month', orderdate)=date_trunc('month', current_timestamp) and o.driverid = %s""", id)
     columns = [column[0] for column in cursor.description]
     results = []
     rows = cursor.fetchall()
@@ -103,7 +107,22 @@ date_trunc('month', orderdate)=date_trunc('month', current_timestamp)""")
         results.append(dict(zip(columns, row)))
     return jsonify({'data': results})
 
+@app.route("/Rybn/driverHasActiveOrder/<int:driver_id>", methods=['GET'])
+def has_active_order(driver_id):
+    cursor = conn.cursor()
+    cursor.execute("""select orderid, orderdate, orderfirstaddress,
+        orderdestinationaddress, s.statusname from Orders o, Statuses s 
+        where o.statusid=s.statusid and s.statusname='Активен' and o.driverid=%(driverid)s""", {'driverid':driver_id})
+    row = cursor.fetchone()
+    columns = [column[0] for column in cursor.description]
 
+    result = {}
+    if row != None:
+        for i in range(len(columns)):
+            result[columns[i]] = row[i]
+    else:
+        return abort(404)
+    return result
 
 if __name__ == "__main__":
     app.run(port=4129, debug=True, host='localhost')
