@@ -5,11 +5,10 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
-import com.rybnickov.taxidrivers.CurrentUser
+import com.rybnickov.taxidrivers.CurrentData
 import com.rybnickov.taxidrivers.R
 import com.rybnickov.taxidrivers.api.TaxiApiClient
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -61,7 +60,16 @@ class AuthActivity : AppCompatActivity() {
                 ?.subscribe(
                     { result ->
                         if (result.id != 0) {
-                            CurrentUser.user = result
+                            if (!result.activity) {
+                                Toast.makeText(
+                                    context,
+                                    "Доступ запрещён",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                return@subscribe
+                            }
+
+                            CurrentData.user = result
                             if (rememberMeCheckBox.isChecked) {
                                 val editor = prefs.edit()
                                 editor.putString("phone", phone)
@@ -71,7 +79,8 @@ class AuthActivity : AppCompatActivity() {
                             val intent: Intent = Intent(context, FragmentActivity::class.java)
                             startActivity(intent)
 
-                        } else Toast.makeText(
+                        }
+                        else Toast.makeText(
                             context,
                             "Неправильно введён номер телефона или пароль",
                             Toast.LENGTH_LONG

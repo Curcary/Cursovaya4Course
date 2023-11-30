@@ -13,4 +13,6 @@ class Order {
     var date:String = ""
     @SerializedName("statusname")
     var status:String =""
+    @SerializedName("order_cost")
+    var cost:Float=0f
 }

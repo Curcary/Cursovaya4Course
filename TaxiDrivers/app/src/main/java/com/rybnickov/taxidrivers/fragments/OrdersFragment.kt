@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ListView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.rybnickov.taxidrivers.CurrentData
 import com.rybnickov.taxidrivers.R
 import com.rybnickov.taxidrivers.adapters.OrdersAdapter
 import com.rybnickov.taxidrivers.api.TaxiApiClient
@@ -16,19 +18,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class Orders_fragment : Fragment(R.layout.fragment_orders_fragment) {
+class OrdersFragment : Fragment(R.layout.fragment_orders_fragment) {
 
     private val client by lazy {
-        this@Orders_fragment.context?.let { TaxiApiClient.create(it) }
+        this@OrdersFragment.context?.let { TaxiApiClient.create(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setList(view)
+        if (CurrentData.order.id==-1)
+            setList(view)
+        else
+            (view.context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_view, OrderFragment()).commit()
     }
     fun setList(view: View ) {
         val context =this.context
-        var orders: List<Order> = ArrayList()
+        var orders: List<Order>
         CoroutineScope(Dispatchers.IO).launch {
             client?.getActiveOrders(
             )
@@ -52,6 +58,7 @@ class Orders_fragment : Fragment(R.layout.fragment_orders_fragment) {
                                 when (error.code()) {
                                     401 -> "Необходимо авторизоваться"
                                     403 -> "Это действие нельзя выполнить"
+                                    404 -> ""
                                     else -> "Неизвестная ошибка"
                                 }
                             }
@@ -60,7 +67,7 @@ class Orders_fragment : Fragment(R.layout.fragment_orders_fragment) {
                             }
                         }
                         println(errorMessage)
-                        Toast.makeText(this@Orders_fragment.context, errorMessage, Toast.LENGTH_LONG)
+                        Toast.makeText(this@OrdersFragment.context, errorMessage, Toast.LENGTH_LONG)
                             .show()
                     }
                 )

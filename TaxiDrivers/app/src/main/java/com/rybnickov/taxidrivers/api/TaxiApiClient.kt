@@ -8,6 +8,8 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface TaxiApiClient {
@@ -18,8 +20,27 @@ interface TaxiApiClient {
     @GET("ActiveOrders")
     fun getActiveOrders():Observable<List<Order>>
 
-    @GET("hasActiveOrder/{driver_id}")
-    fun hasActiveOrder(@Path("driver_id") id:Int):Observable<Driver>
+    @GET("driverHasActiveOrder/{driver_id}")
+    fun hasActiveOrder(@Path("driver_id") id:Int):Observable<Order>
+
+    @GET("TakeAnOrder/{order_id}/{driver_id}")
+    fun takeAnOrder(@Path("order_id") order_id:Int, @Path("driver_id") driver_id:Int):Observable<MessageResponse>
+
+    @GET("EndOrder/{order_id}")
+    fun endOrder(@Path("order_id") order_id: Int) : Observable<MessageResponse>
+
+    @GET("Arrived/{order_id}")
+    fun confirmArrivement(@Path("order_id") order_id: Int) : Observable<MessageResponse>
+
+    @PUT("DeclineOrder/{order_id}")
+    fun declineOrder(@Path("order_id") order_id: Int) : Observable<MessageResponse>
+
+    @GET("GetMonthlyStats/{driver_id}")
+    fun getMonthlyStats(@Path("driver_id") driver_id: Int):Observable<Statistic>
+
+    @GET("GetTodaysStats/{driver_id}")
+    fun getTodaysStats(@Path("driver_id") driver_id: Int):Observable<Statistic>
+
 
     companion object {
         fun create(context: Context): TaxiApiClient {

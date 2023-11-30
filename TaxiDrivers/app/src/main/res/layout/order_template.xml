@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
-    android:background="@drawable/order_background"
+    android:background="@drawable/order_template_background"
     android:layout_height="85dp"
     >
 
@@ -17,7 +17,7 @@
         android:layout_height="200px"
         android:layout_marginStart="16dp"
         android:orientation="vertical"
-        android:padding="8dp"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

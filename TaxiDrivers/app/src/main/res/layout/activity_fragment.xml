@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainlayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,18 +11,18 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
-        android:name="com.rybnickov.taxidrivers.fragments.Orders_fragment"
+        android:name="com.rybnickov.taxidrivers.fragments.OrdersFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".Activities.MainActivity"
         tools:layout="@layout/fragment_orders_fragment" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_nav_layout"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:background="@color/button_color"
@@ -32,9 +33,44 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         android:orientation="horizontal">
-    <ImageButton
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:background="@drawable/account_icon"/>
-    </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/profileButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/account_icon"
+            android:onClick="goToAccountClick"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.201"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.454" />
+
+        <ImageButton
+            android:id="@+id/ordersButton"
+            android:layout_width="37dp"
+            android:layout_height="44dp"
+            android:background="@drawable/orders_icon"
+            android:onClick="goToOrdersClick"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.454" />
+
+        <ImageButton
+            android:id="@+id/statsButton"
+            android:layout_width="37dp"
+            android:layout_height="44dp"
+            android:background="@drawable/stats_icon"
+            android:onClick="goToStatsClick"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.815"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.454" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
